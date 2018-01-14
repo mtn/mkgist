@@ -7,3 +7,5 @@ A small utility for making gists. When I need to share code snippets online, the
     mkgist filename [-d "description"]
 
 The location of the created gist is printed to stdout. Gists are anonymous.
+
+Also, it's probably a good idea to have it in the path.
