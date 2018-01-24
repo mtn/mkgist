@@ -27,4 +27,11 @@ if __name__ == "__main__":
 
     r = requests.post(ENDPOINT, data=json.dumps(request_data))
 
-    print(r.json()['html_url'])
+    try:
+        as_json = r.json()
+        if 'html_url' in as_json:
+            print(as_json['html_url'])
+        else:
+            print(as_json['message'])
+    except:
+        print("An error occured")
