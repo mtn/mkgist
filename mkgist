@@ -22,8 +22,13 @@ if __name__ == "__main__":
     if args.description:
         request_data["description"] = args.description
     request_data["files"] = { args.filename: { "content": None } }
-    with open("{}/{}".format(BASE_DIR, args.filename), 'r') as content_file:
-        request_data["files"][args.filename]["content"] = content_file.read()
+    try:
+        with open("{}/{}".format(BASE_DIR, args.filename), 'r') as content_file:
+            request_data["files"][args.filename]["content"] = content_file.read()
+    except IOError:
+        print("An error occured when opening the file")
+        exit(1)
+
 
     r = requests.post(ENDPOINT, data=json.dumps(request_data))
 
@@ -32,6 +37,6 @@ if __name__ == "__main__":
         if 'html_url' in as_json:
             print(as_json['html_url'])
         else:
-            print(as_json['message'])
+            print(as_json['message'].rstrip())
     except:
         print("An error occured")
