@@ -21,10 +21,16 @@ if __name__ == "__main__":
     request_data = { "public": True }
     if args.description:
         request_data["description"] = args.description
-    request_data["files"] = { args.filename: { "content": None } }
+
+    if "/" not in args.filename:
+        filename = args.filename
+    else:
+        filename = args.filename[args.filename.rfind("/") + 1:]
+
+    request_data["files"] = { filename: { "content": None } }
     try:
         with open("{}/{}".format(BASE_DIR, args.filename), 'r') as content_file:
-            request_data["files"][args.filename]["content"] = content_file.read()
+            request_data["files"][filename]["content"] = content_file.read()
     except IOError:
         print("An error occured when opening the file")
         exit(1)
