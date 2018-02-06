@@ -16,9 +16,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Utility for making anonymous gists")
     parser.add_argument("filename", help="Name of file to make into gist")
     parser.add_argument("-d", "--description", help="description for gist")
+    parser.add_argument("-s", "--secret", action="store_true",
+                        help="hide gist from search engines")
     args = parser.parse_args()
 
-    request_data = { "public": True }
+    if args.secret:
+        request_data = { "public": False }
+    else:
+        request_data = { "public": True }
+
     if args.description:
         request_data["description"] = args.description
 
