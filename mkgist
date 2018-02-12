@@ -16,6 +16,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Utility for making anonymous gists")
     parser.add_argument("filename", help="Name of file to make into gist")
     parser.add_argument("-d", "--description", help="description for gist")
+    parser.add_argument("-r", "--raw", action="store_true", help="fetch raw link")
     parser.add_argument("-s", "--secret", action="store_true",
                         help="hide gist from search engines")
     args = parser.parse_args()
@@ -47,7 +48,10 @@ if __name__ == "__main__":
     try:
         as_json = r.json()
         if 'html_url' in as_json:
-            print(as_json['html_url'])
+            if args.raw:
+                print(as_json["files"][filename]["raw_url"])
+            else:
+                print(as_json['html_url'])
         else:
             print(as_json['message'].rstrip())
     except:
