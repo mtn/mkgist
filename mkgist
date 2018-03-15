@@ -14,7 +14,7 @@ ENDPOINT = "https://api.github.com/gists"
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Utility for making anonymous gists")
-    parser.add_argument("filename", help="Name of file to make into gist")
+    parser.add_argument("filenames", help="Name of file(s) to make into gist", nargs="+")
     parser.add_argument("-d", "--description", help="description for gist")
     parser.add_argument("-r", "--raw", action="store_true", help="fetch raw link")
     parser.add_argument("-s", "--secret", action="store_true",
@@ -29,19 +29,25 @@ if __name__ == "__main__":
     if args.description:
         request_data["description"] = args.description
 
-    if "/" not in args.filename:
-        filename = args.filename
-    else:
-        filename = args.filename[args.filename.rfind("/") + 1:]
+    filenames = []
+    for filename in args.filenames:
+        if "/" not in filename:
+            name = filename
+        else:
+            name = filename[filename.rfind("/") + 1:]
+        filenames.append(name)
 
-    request_data["files"] = { filename: { "content": None } }
-    try:
-        with open("{}/{}".format(BASE_DIR, args.filename), 'r') as content_file:
-            request_data["files"][filename]["content"] = content_file.read()
-    except IOError:
-        print("An error occured when opening the file")
-        exit(1)
+        if not "files" in request_data:
+            request_data["files"] = { name: { "content": None } }
+        else:
+            request_data["files"][name] = { "content": None }
 
+        try:
+            with open("{}/{}".format(BASE_DIR, filename), 'r') as content_file:
+                request_data["files"][name]["content"] = content_file.read()
+        except IOError:
+            print("An error occured when opening file {}".format(filename))
+            exit(1)
 
     r = requests.post(ENDPOINT, data=json.dumps(request_data))
 
@@ -49,7 +55,8 @@ if __name__ == "__main__":
         as_json = r.json()
         if 'html_url' in as_json:
             if args.raw:
-                print(as_json["files"][filename]["raw_url"])
+                for name in filenames:
+                    print("{}:\n{}\n".format(name, as_json["files"][name]["raw_url"]))
             else:
                 print(as_json['html_url'])
         else:
