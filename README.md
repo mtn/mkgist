@@ -2,10 +2,19 @@
 
 A small utility for making gists. When I need to share code snippets online, the formatting always ends up totally messed up when I copy-paste manually. This alleviates that.
 
+## Setup
+
+For general use, it's a good idea to keep it somewhere in your path. Because the endpoint requires authentication, you should create a JSON file with your credentials called `.mkgist.conf` at the home directory. For example,
+
+```
+{
+  "username": "user",
+  "password": "password"
+}
+```
+
 ## Usage
 
-    mkgist filenames [-d "description"] [--secret] [--raw]
+    mkgist filenames [-d "description"] [--public] [--raw]
 
-The location of the created gist is printed to stdout. Gists are anonymous. Secret gists aren't indexed by search engines, though regular anonymous ones don't seem to be anyways. `[--raw]` returns a link to the raw hosted file, which you can then get with `curl` or `wget`.
-
-Also, it's probably a good idea to have it in the path.
+The location of the created gist is printed to stdout. Gists are secret by default, but can be made public with `--public`. Secret gists aren't indexed by search engines. `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`.

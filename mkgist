@@ -7,9 +7,12 @@ import os
 import json
 import argparse
 import requests
+from requests.auth import HTTPBasicAuth
+
 
 BASE_DIR = os.getcwd()
 ENDPOINT = "https://api.github.com/gists"
+SECRETS_FILE = os.path.expanduser('~/.mkgist.conf')
 
 
 if __name__ == "__main__":
@@ -17,17 +20,19 @@ if __name__ == "__main__":
     parser.add_argument("filenames", help="Name of file(s) to make into gist", nargs="+")
     parser.add_argument("-d", "--description", help="description for gist")
     parser.add_argument("-r", "--raw", action="store_true", help="fetch raw link")
-    parser.add_argument("-s", "--secret", action="store_true",
-                        help="hide gist from search engines")
+    parser.add_argument("-p", "--public", action="store_true",
+                        help="make gist public")
     args = parser.parse_args()
 
-    if args.secret:
-        request_data = { "public": False }
-    else:
+    if args.public:
         request_data = { "public": True }
+    else:
+        request_data = { "public": False }
 
     if args.description:
         request_data["description"] = args.description
+
+    SECRETS = json.load(open(SECRETS_FILE))
 
     filenames = []
     for filename in args.filenames:
@@ -49,7 +54,10 @@ if __name__ == "__main__":
             print("An error occured when opening file {}".format(filename))
             exit(1)
 
-    r = requests.post(ENDPOINT, data=json.dumps(request_data))
+    r = requests.post(ENDPOINT,
+                     data=json.dumps(request_data),
+                     auth=HTTPBasicAuth(SECRETS["username"], SECRETS["password"]))
+
 
     try:
         as_json = r.json()
@@ -60,6 +68,7 @@ if __name__ == "__main__":
             else:
                 print(as_json['html_url'])
         else:
+            print(as_json)
             print(as_json['message'].rstrip())
     except:
         print("An error occured")
