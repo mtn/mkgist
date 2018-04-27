@@ -6,13 +6,15 @@ Small utility for making anonymous gists from command line
 import os
 import json
 import argparse
+import pyperclip
 import requests
 from requests.auth import HTTPBasicAuth
 
 
+
 BASE_DIR = os.getcwd()
 ENDPOINT = "https://api.github.com/gists"
-SECRETS_FILE = os.path.expanduser('~/.mkgist.conf')
+SECRETS_FILE = os.path.expanduser("~/.mkgist.conf")
 
 
 if __name__ == "__main__":
@@ -20,6 +22,8 @@ if __name__ == "__main__":
     parser.add_argument("filenames", help="Name of file(s) to make into gist", nargs="+")
     parser.add_argument("-d", "--description", help="description for gist")
     parser.add_argument("-r", "--raw", action="store_true", help="fetch raw link")
+    parser.add_argument("-n", "--nocopy", action="store_true",
+                        help="print result url to screen instead of overwriting clipboard")
     parser.add_argument("-p", "--public", action="store_true",
                         help="make gist public")
     args = parser.parse_args()
@@ -48,7 +52,7 @@ if __name__ == "__main__":
             request_data["files"][name] = { "content": None }
 
         try:
-            with open("{}/{}".format(BASE_DIR, filename), 'r') as content_file:
+            with open("{}/{}".format(BASE_DIR, filename), "r") as content_file:
                 request_data["files"][name]["content"] = content_file.read()
         except IOError:
             print("An error occured when opening file {}".format(filename))
@@ -61,14 +65,19 @@ if __name__ == "__main__":
 
     try:
         as_json = r.json()
-        if 'html_url' in as_json:
+        if "html_url" in as_json:
             if args.raw:
                 for name in filenames:
                     print("{}:\n{}\n".format(name, as_json["files"][name]["raw_url"]))
             else:
-                print(as_json['html_url'])
+                if args.nocopy:
+                    print(as_json["html_url"])
+                else:
+                    pyperclip.copy(as_json["html_url"])
+                    pyperclip.paste()
+                    print("Gist URL copied to clipboard.")
         else:
             print(as_json)
-            print(as_json['message'].rstrip())
+            print(as_json["message"].rstrip())
     except:
         print("An error occured")

@@ -15,6 +15,6 @@ For general use, it's a good idea to keep it somewhere in your path. Because the
 
 ## Usage
 
-    mkgist filenames [-d "description"] [--public] [--raw]
+    mkgist filenames [-d "description"] [--public] [--raw] [--nocopy]
 
-The location of the created gist is printed to stdout. Gists are secret by default, but can be made public with `--public`. Secret gists aren't indexed by search engines. `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`.
+The location of the created gist is printed to stdout. Gists are secret by default, but can be made public with `--public`. Secret gists aren't indexed by search engines. `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`. By default, the URL of the created Gist is copied to the clipboard. `--nocopy` prints this to stdout instead, preserving the clipboard.
