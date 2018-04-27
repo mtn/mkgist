@@ -13,6 +13,8 @@ For general use, it's a good idea to keep it somewhere in your path. Because the
 }
 ```
 
+To install dependencies, run `pip install -r requirements.txt` after installing.
+
 ## Usage
 
     mkgist filenames [-d "description"] [--public] [--raw] [--nocopy]
