@@ -66,12 +66,11 @@ if __name__ == "__main__":
                 print("An error occured when opening file {}".format(filename))
                 exit(1)
     else:
-        name = input("Enter gist name: ")
-        print("Reading from STDIN. Press Ctrl-D on a newline to finish.")
+        print("Reading from STDIN. If not piping, press Ctrl-D on a newline to finish.")
 
         request_data["files"] = {}
-        request_data["files"][name] = { "content": None }
-        request_data["files"][name]["content"] = sys.stdin.read()
+        request_data["files"]["out"] = { "content": None }
+        request_data["files"]["out"]["content"] = sys.stdin.read()
 
     r = requests.post(ENDPOINT,
                      data=json.dumps(request_data),
