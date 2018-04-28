@@ -4,11 +4,14 @@ Small utility for making anonymous gists from command line
 """
 
 import os
+import sys
 import json
 import argparse
 import pyperclip
 import requests
+
 from requests.auth import HTTPBasicAuth
+from os.path import isabs, expanduser
 
 
 
@@ -19,7 +22,7 @@ SECRETS_FILE = os.path.expanduser("~/.mkgist.conf")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Utility for making anonymous gists")
-    parser.add_argument("filenames", help="Name of file(s) to make into gist", nargs="+")
+    parser.add_argument("filenames", help="Name of file(s) to make into gist", nargs="*")
     parser.add_argument("-d", "--description", help="description for gist")
     parser.add_argument("-r", "--raw", action="store_true", help="fetch raw link")
     parser.add_argument("-n", "--nocopy", action="store_true",
@@ -38,25 +41,39 @@ if __name__ == "__main__":
 
     SECRETS = json.load(open(SECRETS_FILE))
 
-    filenames = []
-    for filename in args.filenames:
-        if "/" not in filename:
-            name = filename
-        else:
-            name = filename[filename.rfind("/") + 1:]
-        filenames.append(name)
+    if args.filenames:
+        filenames = []
+        for filename in args.filenames:
+            if "/" not in filename:
+                name = filename
+            else:
+                name = filename[filename.rfind("/") + 1:]
+            filenames.append(name)
 
-        if not "files" in request_data:
-            request_data["files"] = { name: { "content": None } }
-        else:
-            request_data["files"][name] = { "content": None }
+            if not "files" in request_data:
+                request_data["files"] = { name: { "content": None } }
+            else:
+                request_data["files"][name] = { "content": None }
 
-        try:
-            with open("{}/{}".format(BASE_DIR, filename), "r") as content_file:
-                request_data["files"][name]["content"] = content_file.read()
-        except IOError:
-            print("An error occured when opening file {}".format(filename))
-            exit(1)
+            try:
+                if isabs(expanduser(filename)):
+                    with open(expanduser(filename), "r") as content_file:
+                        request_data["files"][name]["content"] = content_file.read()
+                else:
+                    with open("{}/{}".format(BASE_DIR, filename), "r") as content_file:
+                        request_data["files"][name]["content"] = content_file.read()
+            except IOError:
+                print("An error occured when opening file {}".format(filename))
+                exit(1)
+    else:
+        name = input("Enter gist name: ")
+        print("Reading from STDIN. Press Ctrl-D to finish.")
+
+        request_data["files"] = {}
+        request_data["files"][name] = { "content": None }
+        request_data["files"][name]["content"] = sys.stdin.read()
+
+        print(request_data["files"][name]["content"])
 
     r = requests.post(ENDPOINT,
                      data=json.dumps(request_data),
