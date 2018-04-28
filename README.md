@@ -13,10 +13,15 @@ For general use, it's a good idea to keep it somewhere in your path. Because the
 }
 ```
 
-To install dependencies, run `pip install -r requirements.txt` after installing.
+To install dependencies, run `pip install -r requirements.txt` after installing. I don't use this within a virtual environment, but doing so would look something like this:
+
+```
+virtualenv -p $(which python3) $HOME/virtualenv/mkgist
+source $HOME/virtualenv/mkgist/bin/activate
+```
 
 ## Usage
 
     mkgist filenames [-d "description"] [--public] [--raw] [--nocopy]
 
-The location of the created gist is printed to stdout. Gists are secret by default, but can be made public with `--public`. Secret gists aren't indexed by search engines. `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`. By default, the URL of the created Gist is copied to the clipboard. `--nocopy` prints this to stdout instead, preserving the clipboard.
+If no filenames are entered, the name and contents of the gist are read from STDIN. The location of the created gist is printed to stdout. Gists are secret by default, but can be made public with `--public`. Secret gists aren't indexed by search engines. `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`. By default, the URL of the created Gist is copied to the clipboard. `--nocopy` prints the link to stdout instead, not overwriting the clipboard.

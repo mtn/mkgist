@@ -67,13 +67,11 @@ if __name__ == "__main__":
                 exit(1)
     else:
         name = input("Enter gist name: ")
-        print("Reading from STDIN. Press Ctrl-D to finish.")
+        print("Reading from STDIN. Press Ctrl-D on a newline to finish.")
 
         request_data["files"] = {}
         request_data["files"][name] = { "content": None }
         request_data["files"][name]["content"] = sys.stdin.read()
-
-        print(request_data["files"][name]["content"])
 
     r = requests.post(ENDPOINT,
                      data=json.dumps(request_data),
