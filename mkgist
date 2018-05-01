@@ -81,17 +81,25 @@ if __name__ == "__main__":
         as_json = r.json()
         if "html_url" in as_json:
             if args.raw:
-                for name in filenames:
-                    print("{}:\n{}\n".format(name, as_json["files"][name]["raw_url"]))
-            else:
-                if args.nocopy:
-                    print(as_json["html_url"])
+                if args.filenames:
+                    if len(filenames) > 1:
+                        for name in filenames:
+                            print("{}:\n{}\n".format(name, as_json["files"][name]["raw_url"]))
+                        exit(1)
+                    else:
+                        url = as_json["files"][args.filenames[0]]["raw_url"]
                 else:
-                    pyperclip.copy(as_json["html_url"])
-                    pyperclip.paste()
-                    print("Gist URL copied to clipboard.")
+                    url = as_json["files"]["out"]["raw_url"]
+            else:
+                url = as_json["html_url"]
+
+            if args.nocopy:
+                print(url)
+            else:
+                pyperclip.copy(url)
+                pyperclip.paste()
+                print("Gist URL copied to clipboard.")
         else:
-            print(as_json)
             print(as_json["message"].rstrip())
     except:
         print("An error occured")

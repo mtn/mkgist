@@ -27,5 +27,5 @@ source $HOME/virtualenv/mkgist/bin/activate
 - If no filenames are entered, the contents of the gist are read from STDIN.
 - The location of the created gist is printed to stdout.
 - Gists are secret by default, but can be made public with `--public`. (Secret gists aren't indexed by search engines)
-- `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`.
+- `--raw` returns a link to the raw hosted file, which you can then get with `curl` or `wget`. If multiple files are created with this flag, the URLs are always printed to stdout.
 - By default, the URL of the created Gist is copied to the clipboard. `--nocopy` prints the link to stdout instead, not overwriting the clipboard.
