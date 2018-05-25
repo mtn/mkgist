@@ -24,13 +24,13 @@ def process_files(arg_filenames, request_data):
         if "/" not in filename:
             name = filename
         else:
-            name = filename[filename.rfind("/") + 1:]
+            name = filename[filename.rfind("/") + 1 :]
         filenames.append(name)
 
         if not "files" in request_data:
-            request_data["files"] = { name: { "content": None } }
+            request_data["files"] = {name: {"content": None}}
         else:
-            request_data["files"][name] = { "content": None }
+            request_data["files"][name] = {"content": None}
 
         try:
             if isabs(expanduser(filename)):
@@ -45,14 +45,16 @@ def process_files(arg_filenames, request_data):
 
     return request_data, filenames
 
+
 def process_stdin(request_data):
     print("Reading from STDIN. If not piping, press Ctrl-D on a newline to finish.")
 
     request_data["files"] = {}
-    request_data["files"]["out"] = { "content": None }
+    request_data["files"]["out"] = {"content": None}
     request_data["files"]["out"]["content"] = sys.stdin.read()
 
     return request_data
+
 
 def handle_raw(as_json, args, filenames):
     if args.filenames:
@@ -66,6 +68,7 @@ def handle_raw(as_json, args, filenames):
         url = as_json["files"]["out"]["raw_url"]
 
     return url
+
 
 def process_result(res, args, filenames):
     try:
@@ -87,11 +90,12 @@ def process_result(res, args, filenames):
     except:
         print("An error occured")
 
+
 def run(args):
     if args.public:
-        request_data = { "public": True }
+        request_data = {"public": True}
     else:
-        request_data = { "public": False }
+        request_data = {"public": False}
 
     if args.description:
         request_data["description"] = args.description
@@ -102,25 +106,29 @@ def run(args):
         filenames = []
         request_data = process_stdin(request_data)
 
-    res = requests.post(ENDPOINT,
-                        data=json.dumps(request_data),
-                        auth=HTTPBasicAuth(SECRETS["username"], SECRETS["password"]))
+    res = requests.post(
+        ENDPOINT,
+        data=json.dumps(request_data),
+        auth=HTTPBasicAuth(SECRETS["username"], SECRETS["password"]),
+    )
 
     process_result(res, args, filenames)
 
 
-
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Utility for making anonymous gists")
-    parser.add_argument("filenames", help="Name of file(s) to make into gist", nargs="*")
+    parser.add_argument(
+        "filenames", help="Name of file(s) to make into gist", nargs="*"
+    )
     parser.add_argument("-d", "--description", help="description for gist")
     parser.add_argument("-r", "--raw", action="store_true", help="fetch raw link")
-    parser.add_argument("-n", "--nocopy", action="store_true",
-                        help="print result url to screen instead of overwriting clipboard")
-    parser.add_argument("-p", "--public", action="store_true",
-                        help="make gist public")
+    parser.add_argument(
+        "-n",
+        "--nocopy",
+        action="store_true",
+        help="print result url to screen instead of overwriting clipboard",
+    )
+    parser.add_argument("-p", "--public", action="store_true", help="make gist public")
     args = parser.parse_args()
 
     # Load secrets, which contains login info
