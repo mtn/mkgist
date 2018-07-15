@@ -12,6 +12,7 @@ import requests
 
 from requests.auth import HTTPBasicAuth
 from os.path import isabs, expanduser
+from getpass import getpass
 
 BASE_DIR = os.getcwd()
 ENDPOINT = "https://api.github.com/gists"
@@ -20,11 +21,14 @@ SECRETS_FILE = os.path.expanduser("~/.mkgist.conf")
 
 def create_secrets_file():
     print("(First use) Please enter username and password")
+    SECRETS = {}
     SECRETS["username"] = input("Username: ")
-    SECRETS["password"] = input("Password: ")
+    SECRETS["password"] = getpass("Password: ")
+
     with open(SECRETS_FILE, "w") as secrets_file:
         secrets_file.write(json.dumps(SECRETS))
         print("Done!")
+        return SECRETS
 
 
 def process_files(arg_filenames, request_data):
@@ -144,6 +148,6 @@ if __name__ == "__main__":
     try:
         SECRETS = json.load(open(SECRETS_FILE))
     except FileNotFoundError:
-        create_secrets_file()
+        SECRETS = create_secrets_file()
 
     run(args)
