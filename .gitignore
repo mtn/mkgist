@@ -2,3 +2,6 @@
 .DS_Store
 todo.txt
 test.json
+build
+dist
+mkgist.egg-info

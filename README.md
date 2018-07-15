@@ -4,14 +4,15 @@ A small utility for making gists. When I need to share code snippets online, the
 
 ## Setup
 
-For general use, it's a good idea to keep it somewhere in your path. Because the endpoint requires authentication, you should create a JSON file with your credentials called `.mkgist.conf` at the home directory. For example,
+### With pip
 
-```
-{
-  "username": "user",
-  "password": "password"
-}
-```
+The easiest way to get a copy is through `pip`:
+
+    pip install mkgist
+
+Note that it depending on your installation, you might need to use `pip3`.
+
+### Manual
 
 To install dependencies, run `pip install -r requirements.txt` after installing. I don't use this within a virtual environment, but doing so would look something like this:
 
