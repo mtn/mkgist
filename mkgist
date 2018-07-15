@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Small utility for making anonymous gists from command line
+A small utility for making gists from the command line
 """
 
 import os
@@ -16,6 +16,15 @@ from os.path import isabs, expanduser
 BASE_DIR = os.getcwd()
 ENDPOINT = "https://api.github.com/gists"
 SECRETS_FILE = os.path.expanduser("~/.mkgist.conf")
+
+
+def create_secrets_file():
+    print("(First use) Please enter username and password")
+    SECRETS["username"] = input("Username: ")
+    SECRETS["password"] = input("Password: ")
+    with open(SECRETS_FILE, "w") as secrets_file:
+        secrets_file.write(json.dumps(SECRETS))
+        print("Done!")
 
 
 def process_files(arg_filenames, request_data):
@@ -132,6 +141,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Load secrets, which contains login info
-    SECRETS = json.load(open(SECRETS_FILE))
+    try:
+        SECRETS = json.load(open(SECRETS_FILE))
+    except FileNotFoundError:
+        create_secrets_file()
 
     run(args)
