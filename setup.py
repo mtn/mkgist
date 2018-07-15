@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mkgist",
-    version="3.1",
+    version="3.2",
     author="Michael Noronha",
     author_email="michaeltnoronha@gmail.com",
     description="A small utility for making gists",

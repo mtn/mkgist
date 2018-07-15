@@ -10,7 +10,6 @@ import argparse
 import pyperclip
 import requests
 
-from requests.auth import HTTPBasicAuth
 from os.path import isabs, expanduser
 from getpass import getpass
 
@@ -146,10 +145,16 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--public", action="store_true", help="make gist public")
     args = parser.parse_args()
 
-    # Load secrets, which contains access token
     try:
-        SECRETS = json.load(open(SECRETS_FILE))
-    except FileNotFoundError:
-        SECRETS = create_secrets_file()
+        # Load secrets, which contains access token
+        try:
+            SECRETS = json.load(open(SECRETS_FILE))
+            if not "access_token" in SECRETS:
+                SECRETS = create_secrets_file()
+        except FileNotFoundError:
+            SECRETS = create_secrets_file()
 
-    run(args)
+        run(args)
+    except KeyboardInterrupt:
+        print("Exiting")
+        exit(0)

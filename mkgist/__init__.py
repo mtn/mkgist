@@ -1,3 +1,3 @@
-VERSION = "3.1"
+VERSION = "3.2"
 NAME = "mkgist"
 
