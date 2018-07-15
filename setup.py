@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mkgist",
-    version="3.0",
+    version="3.1",
     author="Michael Noronha",
     author_email="michaeltnoronha@gmail.com",
     description="A small utility for making gists",
@@ -18,6 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ),
+    license = "MIT",
     scripts=["bin/mkgist"],
     install_requires=[
         "certifi==2017.11.5",

@@ -20,15 +20,17 @@ SECRETS_FILE = os.path.expanduser("~/.mkgist.conf")
 
 
 def create_secrets_file():
-    print("(First use) Please enter username and password")
-    SECRETS = {}
-    SECRETS["username"] = input("Username: ")
-    SECRETS["password"] = getpass("Password: ")
+    print("(First use) Please retreive a personal access token")
+    print("Link: https://github.com/settings/tokens/new")
+    print("It must have the 'gist' scope")
+
+    secrets = {}
+    secrets["access_token"] = getpass("Token: ")
 
     with open(SECRETS_FILE, "w") as secrets_file:
         secrets_file.write(json.dumps(SECRETS))
         print("Done!")
-        return SECRETS
+        return secrets
 
 
 def process_files(arg_filenames, request_data):
@@ -122,7 +124,7 @@ def run(args):
     res = requests.post(
         ENDPOINT,
         data=json.dumps(request_data),
-        auth=HTTPBasicAuth(SECRETS["username"], SECRETS["password"]),
+        headers={"Authorization": "token {}".format(SECRETS["access_token"])}
     )
 
     process_result(res, args, filenames)
@@ -144,7 +146,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--public", action="store_true", help="make gist public")
     args = parser.parse_args()
 
-    # Load secrets, which contains login info
+    # Load secrets, which contains access token
     try:
         SECRETS = json.load(open(SECRETS_FILE))
     except FileNotFoundError:
