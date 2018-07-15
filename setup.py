@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="mkgist",
-    version="2.0",
+    version="2.1",
     author="Michael Noronha",
     author_email="michaeltnoronha@gmail.com",
     description="A small utility for making gists",
@@ -19,4 +19,12 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ),
     scripts=["bin/mkgist"],
+    install_requires=[
+        "certifi==2017.11.5",
+        "chardet==3.0.4",
+        "idna==2.6",
+        "pyperclip==1.6.0",
+        "requests==2.18.4",
+        "urllib3==1.22",
+    ],
 )
