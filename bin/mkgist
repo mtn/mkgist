@@ -27,7 +27,7 @@ def create_secrets_file():
     secrets["access_token"] = getpass("Token: ")
 
     with open(SECRETS_FILE, "w") as secrets_file:
-        secrets_file.write(json.dumps(SECRETS))
+        secrets_file.write(json.dumps(secrets))
         print("Done!")
         return secrets
 
@@ -52,7 +52,11 @@ def process_files(arg_filenames, request_data):
                     request_data["files"][name]["content"] = content_file.read()
             else:
                 with open("{}/{}".format(BASE_DIR, filename), "r") as content_file:
-                    request_data["files"][name]["content"] = content_file.read()
+                    try:
+                        request_data["files"][name]["content"] = content_file.read()
+                    except:
+                        print("Failed while reading file {}".format(name))
+                        exit(1)
         except IOError:
             print("An error occured when opening file {}".format(filename))
             exit(1)
