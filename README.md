@@ -6,11 +6,11 @@ A small utility for making gists. When I need to share code snippets online, the
 
 ### With pip
 
-The easiest way to get a copy is through `pip`:
+The easiest way to get a copy is through `pip3`:
 
-    pip install mkgist
+    pip3 install mkgist
 
-Note that it depending on your installation, you might need to use `pip3`.
+Annoying things happen, at least on my system, without `pip3`. I'll look into it at some point.
 
 ### Manual
 
