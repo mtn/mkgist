@@ -32,13 +32,18 @@ def create_secrets_file():
         secrets = {}
         secrets["access_token"] = getpass("Token: ")
 
+        if not os.path.isdir(CONF_DIR):
+            os.mkdir(CONF_DIR)
         with open(SECRETS_FILE, "w") as secrets_file:
             secrets_file.write(json.dumps(secrets))
-            print("Done!")
-            return secrets
-    except:
+
+        print("Done!")
+        return secrets
+    except Exception as e:
         if os.path.isfile(SECRETS_FILE):
             os.remove(SECRETS_FILE)
+        print("An error occurred while setting up the token")
+        exit()
 
 def process_files(arg_filenames, request_data):
     filenames = []
@@ -108,8 +113,11 @@ def process_result(res, args, filenames):
             if args.nocopy:
                 print(url)
             else:
+                print("made it here")
                 pyperclip.copy(url)
+                print("made it here")
                 pyperclip.paste()
+                print("made it here")
                 print("Gist URL copied to clipboard.")
         else:
             print(as_json["message"].rstrip())
@@ -144,7 +152,7 @@ def run(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Utility for making anonymous gists")
+    parser = argparse.ArgumentParser(description="Utility for making gists")
     parser.add_argument(
         "filenames", help="Name of file(s) to make into gist", nargs="*"
     )
