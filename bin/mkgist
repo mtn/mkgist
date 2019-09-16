@@ -113,11 +113,8 @@ def process_result(res, args, filenames):
             if args.nocopy:
                 print(url)
             else:
-                print("made it here")
                 pyperclip.copy(url)
-                print("made it here")
                 pyperclip.paste()
-                print("made it here")
                 print("Gist URL copied to clipboard.")
         else:
             print(as_json["message"].rstrip())
