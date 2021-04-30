@@ -26,6 +26,6 @@ setuptools.setup(
         "idna==2.8",
         "pyperclip==1.7.0",
         "requests==2.21.0",
-        "urllib3==1.24.1",
+        "urllib3==1.25.8",
     ],
 )
